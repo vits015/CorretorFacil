@@ -1,0 +1,140 @@
+﻿using Seguros.Application.DTOs.Cliente;
+using Seguros.Application.DTOs.Endereco;
+using Seguros.Application.Interfaces;
+using Seguros.Domain.Entities;
+using Seguros.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Seguros.Application.Services
+{
+    public class ClienteService : IClienteService
+    {
+        private readonly IClienteRepository _clienteRepository;
+        private readonly IEnderecoRepository _enderecoRepository;
+        public ClienteService(IClienteRepository clienteRepository, IEnderecoRepository enderecoRepository)
+        {
+            _clienteRepository = clienteRepository;
+            _enderecoRepository = enderecoRepository;
+        }
+        public async Task<ClienteGetDTO> AddAsync(ClientePostDTO clientePostDTO)
+        {
+            var cliente = new Cliente
+            {
+                Nome = clientePostDTO.Nome,
+                CNPJ = clientePostDTO.CNPJ,
+                CPF = clientePostDTO.CPF
+            };
+            var createdCliente = await _clienteRepository.AddAsync(cliente);
+            return new ClienteGetDTO
+            {
+                Id = createdCliente.Id,
+                Nome = cliente.Nome,
+                CNPJ = createdCliente.CNPJ,
+                CPF= createdCliente.CPF                
+            };
+        }
+
+        public async Task<ClienteGetDTO> DeleteAsync(int id)
+        { 
+          var deletedCurso = await _clienteRepository.DeleteAsync(id);
+            if (deletedCurso == null)
+                return null;
+            return new ClienteGetDTO
+            {
+                Id = deletedCurso.Id,
+                Nome = deletedCurso.Nome,
+                CNPJ = deletedCurso.CNPJ,
+                CPF = deletedCurso.CPF
+            };
+          
+        }        
+
+        public async Task<List<ClienteGetDTO>> GetAllAsync()
+        {
+            var clientes = await _clienteRepository.GetAllAsync();
+            var clientesGetDTOs = new List<ClienteGetDTO>();
+            foreach (var cliente in clientes)
+            {
+                clientesGetDTOs.Add(new ClienteGetDTO { 
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    CNPJ = cliente.CNPJ,
+                    CPF = cliente.CPF
+                });
+            }
+            return clientesGetDTOs;
+        }
+
+        public async Task<List<ClienteDetailsGetDTO>> GetAllDetailsAsync()
+        {
+            var enderecos = await _enderecoRepository.GetAllAsync();            
+            var clientes = await _clienteRepository.GetAllAsync();
+            var clienteDetailsGetDTOs = new List<ClienteDetailsGetDTO>();
+            foreach (var cliente in clientes)
+            {
+                clienteDetailsGetDTOs.Add(new ClienteDetailsGetDTO
+                {
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    CNPJ = cliente.CNPJ,
+                    CPF = cliente.CPF,
+                    Enderecos = enderecos.Where(e => e.ClienteId == cliente.Id).Select(e => new EnderecoGetDTO
+                    {
+                        Id = e.Id,
+                        Logradouro = e.Logradouro,
+                        Numero = e.Numero,
+                        Complemento = e.Complemento,
+                        Bairro = e.Bairro,
+                        Cidade = e.Cidade,
+                        Estado = e.Estado,
+                        CEP = e.CEP
+                    }).ToList()
+                });
+            }
+            return clienteDetailsGetDTOs;
+        }
+
+        public async Task<ClienteGetDTO> GetByIdAsync(int id)
+        {
+            var cliente = await _clienteRepository.GetByIdAsync(id);
+            if (cliente == null)
+                return null;
+            return new ClienteGetDTO
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                CNPJ = cliente.CNPJ,
+                CPF = cliente.CPF
+            };
+        }
+
+        public Task<ClienteDetailsGetDTO> GetDetailsByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ClienteGetDTO> UpdateAsync(ClientePutDTO clientePutDTO)
+        {
+            var cliente = new Cliente
+            {
+                Id = clientePutDTO.Id,
+                Nome = clientePutDTO.Nome,
+                CPF = clientePutDTO.CPF,
+                CNPJ = clientePutDTO.CNPJ
+            };
+            var updatedCliente = await _clienteRepository.UpdateAsync(cliente);
+            if (updatedCliente == null)
+                return null;
+            return new ClienteGetDTO
+            {
+                Id = updatedCliente.Id,
+                Nome = updatedCliente.Nome,
+                CPF = updatedCliente.CPF,
+                CNPJ = updatedCliente.CNPJ
+            };
+
+        }
+    }
+}

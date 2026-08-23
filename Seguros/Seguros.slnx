@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Seguros.API/Seguros.API.csproj" />
+  <Project Path="Seguros.Application/Seguros.Application.csproj" />
+  <Project Path="Seguros.Domain/Seguros.Domain.csproj" />
+  <Project Path="Seguros.Infra.Data/Seguros.Infra.Data.csproj" />
+  <Project Path="Seguros.Infra.Ioc/Seguros.Infra.Ioc.csproj" />
+</Solution>
