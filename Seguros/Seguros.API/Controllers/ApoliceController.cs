@@ -71,5 +71,16 @@ namespace Seguros.API.Controllers
             var apolices = await _apoliceService.GetAllDetailsAsync();
             return Ok(apolices);
         }
+
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult> GetApoliceDetails(int id)
+        {
+            var apolice = await _apoliceService.GetDetailsByIdAsync(id);
+            if (apolice == null)
+            {
+                return NotFound("Apólice não encontrada.");
+            }
+            return Ok(apolice);
+        }
     }
 };

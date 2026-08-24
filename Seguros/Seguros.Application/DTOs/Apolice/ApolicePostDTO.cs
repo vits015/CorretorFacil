@@ -10,14 +10,14 @@ namespace Seguros.Application.DTOs.Apolice
         [Required(ErrorMessage = "O Cliente é obrigatório.")]
         public int ClienteID { get; set; }
         [Required(ErrorMessage = "A data de início da vigência é obrigatória.")]
-        public DateTime VigenciaInicio { get; set; }
+        public DateOnly VigenciaInicio { get; set; }
         [Required(ErrorMessage = "A data de fim da vigência é obrigatória.")]
-        public DateTime VigenciaFim { get; set; }
+        public DateOnly VigenciaFim { get; set; }
         [Required(ErrorMessage = "A Seguradora é obrigatória.")]
         public int SeguradoraID { get; set; }
         [Required(ErrorMessage = "O Tipo de Seguro é obrigatório.")]
         public string TipoSeguro { get; set; }
-        public string Situacao { get; set; }
+        public string Produto { get; set; }
         [Required(ErrorMessage = "O Pagamento é obrigatório.")]
         public int PagamentoID { get; set; }
         [Required(ErrorMessage = "O Prêmio Líquido é obrigatório.")]

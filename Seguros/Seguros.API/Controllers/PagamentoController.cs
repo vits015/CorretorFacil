@@ -28,11 +28,9 @@ namespace Seguros.API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdatePagamento(PagamentoPutDTO pagamentoPutDTO)
         {
-            var updatedPagamento = await _pagamentoService.UpdateAsync(pagamentoPutDTO);
-            if (updatedPagamento == null)
-            {
-                return BadRequest("Não foi possível atualizar o pagamento.");
-            }
+            var updatedPagamento = await _pagamentoService.UpdateAsync(pagamentoPutDTO);            
+            if (updatedPagamento == null)            
+                return BadRequest("Não foi possível atualizar o pagamento.");            
             return Ok(new { message = "Pagamento atualizado com sucesso." });
         }
 

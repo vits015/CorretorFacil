@@ -1,4 +1,5 @@
 ﻿using Seguros.Application.DTOs.Cliente;
+using Seguros.Application.DTOs.Contato;
 using Seguros.Application.DTOs.Endereco;
 using Seguros.Application.Interfaces;
 using Seguros.Domain.Entities;
@@ -13,10 +14,12 @@ namespace Seguros.Application.Services
     {
         private readonly IClienteRepository _clienteRepository;
         private readonly IEnderecoRepository _enderecoRepository;
-        public ClienteService(IClienteRepository clienteRepository, IEnderecoRepository enderecoRepository)
+        private readonly IContatoRepository _contatoRepository;
+        public ClienteService(IClienteRepository clienteRepository, IEnderecoRepository enderecoRepository, IContatoRepository contatoRepository)
         {
             _clienteRepository = clienteRepository;
             _enderecoRepository = enderecoRepository;
+            _contatoRepository = contatoRepository;
         }
         public async Task<ClienteGetDTO> AddAsync(ClientePostDTO clientePostDTO)
         {
@@ -71,16 +74,19 @@ namespace Seguros.Application.Services
         {
             var enderecos = await _enderecoRepository.GetAllAsync();            
             var clientes = await _clienteRepository.GetAllAsync();
+            var contatos = await _contatoRepository.GetAllAsync();
             var clienteDetailsGetDTOs = new List<ClienteDetailsGetDTO>();
             foreach (var cliente in clientes)
             {
-                clienteDetailsGetDTOs.Add(new ClienteDetailsGetDTO
+                var enderecosCliente = enderecos.Where(e => e.ClienteId == cliente.Id);
+                var contatosCliente = contatos.Where(c => c.ClienteID == cliente.Id);    
+
+                var enderecosDoCliente = new List<EnderecoGetDTO>();
+                var contatosDoCliente = new List<ContatoGetDTO>();
+
+                foreach (var e in enderecosCliente)
                 {
-                    Id = cliente.Id,
-                    Nome = cliente.Nome,
-                    CNPJ = cliente.CNPJ,
-                    CPF = cliente.CPF,
-                    Enderecos = enderecos.Where(e => e.ClienteId == cliente.Id).Select(e => new EnderecoGetDTO
+                    enderecosDoCliente.Add(new EnderecoGetDTO
                     {
                         Id = e.Id,
                         Logradouro = e.Logradouro,
@@ -90,8 +96,28 @@ namespace Seguros.Application.Services
                         Cidade = e.Cidade,
                         Estado = e.Estado,
                         CEP = e.CEP
-                    }).ToList()
+                    });
+                }
+                foreach (var c in contatosCliente)
+                {
+                    contatosDoCliente.Add(new ContatoGetDTO
+                    {
+                        Id = c.Id,
+                        Nome = c.Nome,
+                        Descricao = c.Descricao
+                    });
+                }
+
+                clienteDetailsGetDTOs.Add(new ClienteDetailsGetDTO
+                {
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    CNPJ = cliente.CNPJ,
+                    CPF = cliente.CPF,
+                    Enderecos = enderecosDoCliente,
+                    Contatos = contatosDoCliente
                 });
+                                
             }
             return clienteDetailsGetDTOs;
         }

@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Seguros.Application.DTOs.Apolice;
+﻿using Seguros.Application.DTOs.Apolice;
+using Seguros.Application.DTOs.Cliente;
+using Seguros.Application.DTOs.Pagamento;
+using Seguros.Application.DTOs.Seguradora;
+using Seguros.Application.DTOs.Sinistro;
 using Seguros.Application.Exceptions;
 using Seguros.Application.Interfaces;
 using Seguros.Domain.Entities;
 using Seguros.Domain.Interfaces;
-using Seguros.Infra.Data.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Seguros.Application.Services
@@ -14,10 +17,23 @@ namespace Seguros.Application.Services
     public class ApoliceService : IApoliceService
     {
         private readonly IApoliceRepository _apoliceRepository;
+        private readonly IClienteRepository _clienteRepository;
+        private readonly ISeguradoraRepository _seguradoraRepository;
+        private readonly IPagamentoRepository _pagamentoRepository;
+        private readonly ISinistroRepository _sinistroRepository;
 
-        public ApoliceService(IApoliceRepository apoliceRepository)
+        public ApoliceService(
+            IApoliceRepository apoliceRepository,
+            IClienteRepository clienteRepository,
+            ISeguradoraRepository seguradoraRepository,
+            IPagamentoRepository pagamentoRepository,
+            ISinistroRepository sinistroRepository)
         {
             _apoliceRepository = apoliceRepository;
+            _clienteRepository = clienteRepository;
+            _seguradoraRepository = seguradoraRepository;
+            _pagamentoRepository = pagamentoRepository;
+            _sinistroRepository = sinistroRepository;
         }
         public async Task<ApoliceGetDTO> AddAsync(ApolicePostDTO apolicePostDTO)
         {
@@ -28,7 +44,7 @@ namespace Seguros.Application.Services
                 VigenciaFim = apolicePostDTO.VigenciaFim,
                 SeguradoraID = apolicePostDTO.SeguradoraID,
                 TipoSeguro = apolicePostDTO.TipoSeguro,
-                Situacao = apolicePostDTO.Situacao,
+                Produto = apolicePostDTO.Produto,
                 PagamentoID = apolicePostDTO.PagamentoID,
                 PremioLiquido = apolicePostDTO.PremioLiquido,
                 Comissao = apolicePostDTO.Comissao
@@ -41,7 +57,7 @@ namespace Seguros.Application.Services
                 VigenciaFim = result.VigenciaFim,
                 SeguradoraID = result.SeguradoraID,
                 TipoSeguro = result.TipoSeguro,
-                Situacao = result.Situacao,
+                Produto = result.Produto,
                 PagamentoID = result.PagamentoID,
                 PremioLiquido = result.PremioLiquido,
                 Comissao = result.Comissao
@@ -62,7 +78,7 @@ namespace Seguros.Application.Services
                 VigenciaFim = updatedApolice.VigenciaFim,
                 SeguradoraID = updatedApolice.SeguradoraID,
                 TipoSeguro = updatedApolice.TipoSeguro,
-                Situacao = updatedApolice.Situacao,
+                Produto = updatedApolice.Produto,
                 PagamentoID = updatedApolice.PagamentoID,
                 PremioLiquido = updatedApolice.PremioLiquido,
                 Comissao = updatedApolice.Comissao
@@ -80,16 +96,33 @@ namespace Seguros.Application.Services
                 VigenciaFim = a.VigenciaFim,
                 SeguradoraID = a.SeguradoraID,
                 TipoSeguro = a.TipoSeguro,
-                Situacao = a.Situacao,
+                Produto = a.Produto,
                 PagamentoID = a.PagamentoID,
                 PremioLiquido = a.PremioLiquido,
                 Comissao = a.Comissao
             }).ToList();
         }
 
-        public Task<List<ApoliceDetailsGetDTO>> GetAllDetailsAsync()
+        public async Task<List<ApoliceDetailsGetDTO>> GetAllDetailsAsync()
         {
-            throw new NotImplementedException();
+            var apolices = await _apoliceRepository.GetAllAsync();
+            var clientes = await _clienteRepository.GetAllAsync();
+            var seguradoras = await _seguradoraRepository.GetAllAsync();
+            var pagamentos = await _pagamentoRepository.GetAllAsync();
+            var sinistros = await _sinistroRepository.GetAllAsync();
+            var dtos = new List<ApoliceDetailsGetDTO>();
+
+            foreach (var a in apolices)
+            {
+                dtos.Add(MapToDetails(
+                    a,
+                    clientes.FirstOrDefault(c => c.Id == a.ClienteID),
+                    seguradoras.FirstOrDefault(s => s.Id == a.SeguradoraID),
+                    pagamentos.FirstOrDefault(p => p.Id == a.PagamentoID),
+                    sinistros.Where(s => s.SeguroID == a.Id)));
+            }
+
+            return dtos;
         }
 
         public async Task<ApoliceGetDTO> GetByIdAsync(int id)
@@ -104,16 +137,30 @@ namespace Seguros.Application.Services
                 VigenciaFim = apolice.VigenciaFim,
                 SeguradoraID = apolice.SeguradoraID,
                 TipoSeguro = apolice.TipoSeguro,
-                Situacao = apolice.Situacao,
+                Produto = apolice.Produto,
                 PagamentoID = apolice.PagamentoID,
                 PremioLiquido = apolice.PremioLiquido,
                 Comissao = apolice.Comissao
             };                
         }
 
-        public Task<ApoliceDetailsGetDTO> GetDetailsByIdAsync(int id)
+        public async Task<ApoliceDetailsGetDTO> GetDetailsByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var apolice = await _apoliceRepository.GetByIdAsync(id);
+            if (apolice == null)
+                return null;
+
+            var cliente = await _clienteRepository.GetByIdAsync(apolice.ClienteID);
+            var seguradora = await _seguradoraRepository.GetByIdAsync(apolice.SeguradoraID);
+            var pagamento = await _pagamentoRepository.GetByIdAsync(apolice.PagamentoID);
+            var sinistros = await _sinistroRepository.GetAllAsync();
+
+            return MapToDetails(
+                apolice,
+                cliente,
+                seguradora,
+                pagamento,
+                sinistros.Where(s => s.SeguroID == apolice.Id));
         }
 
         public async Task<ApoliceGetDTO> UpdateAsync(ApolicePutDTO apolicePutDTO)
@@ -126,14 +173,65 @@ namespace Seguros.Application.Services
             return new ApoliceGetDTO
             {
                 ClienteID = apoliceUpdated.ClienteID,
-                TipoSeguro = apoliceUpdated.TipoSeguro,
                 VigenciaInicio = apoliceUpdated.VigenciaInicio,
                 VigenciaFim = apoliceUpdated.VigenciaFim,
                 SeguradoraID = apoliceUpdated.SeguradoraID,
-                Situacao = apoliceUpdated.Situacao,
+                TipoSeguro = apoliceUpdated.TipoSeguro,    
+                Produto = apoliceUpdated.Produto,
                 PagamentoID = apoliceUpdated.PagamentoID,
                 PremioLiquido = apoliceUpdated.PremioLiquido,
                 Comissao = apoliceUpdated.Comissao
+            };
+        }
+
+        private static ApoliceDetailsGetDTO MapToDetails(
+            Apolice apolice,
+            Cliente cliente,
+            Seguradora seguradora,
+            Pagamento pagamento,
+            IEnumerable<Sinistro> sinistros)
+        {
+            var sinistrosDto = new List<SinistroGetDTO>();
+            foreach (var s in sinistros)
+            {
+                sinistrosDto.Add(new SinistroGetDTO
+                {
+                    ID = s.ID,
+                    SeguroID = s.SeguroID,
+                    DataOcorrencia = s.DataOcorrencia,
+                    NumeroSinistro = s.NumeroSinistro
+                });
+            }
+
+            return new ApoliceDetailsGetDTO
+            {
+                Id = apolice.Id,
+                Cliente = cliente == null ? null : new ClienteGetDTO
+                {
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    CPF = cliente.CPF,
+                    CNPJ = cliente.CNPJ
+                },
+                VigenciaInicio = apolice.VigenciaInicio,
+                VigenciaFim = apolice.VigenciaFim,
+                Seguradora = seguradora == null ? null : new SeguradoraGetDTO
+                {
+                    Id = seguradora.Id,
+                    Nome = seguradora.Nome
+                },
+                TipoSeguro = apolice.TipoSeguro,                
+                Produto = apolice.Produto,
+                Pagamento = pagamento == null ? null : new PagamentoGetDTO
+                {
+                    Id = pagamento.Id,
+                    TipoPagamento = pagamento.TipoPagamento,
+                    ValorTotal = pagamento.ValorTotal,
+                    QuantidadeParcelas = pagamento.QuantidadeParcelas
+                },
+                PremioLiquido = apolice.PremioLiquido,
+                Comissao = apolice.Comissao,
+                Sinistros = sinistrosDto
             };
         }
     }

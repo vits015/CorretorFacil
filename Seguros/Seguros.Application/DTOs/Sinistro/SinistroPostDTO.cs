@@ -11,7 +11,7 @@ namespace Seguros.Application.DTOs.Sinistro
         public int SeguroID { get; set; }
 
         [Required(ErrorMessage = "O campo Data de Ocorrência é obrigatório.")]
-        public DateTime DataOcorrencia { get; set; }
+        public DateOnly DataOcorrencia { get; set; }
 
         [Required(ErrorMessage = "O campo Número do Sinistro é obrigatório.")]
         [MaxLength(20, ErrorMessage = "O Número do Sinistro deve ter, no máximo, 20 caracteres.")]

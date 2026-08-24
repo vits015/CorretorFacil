@@ -8,7 +8,7 @@ namespace Seguros.Application.DTOs.Sinistro
     {
         public int ID { get; set; }
         public int SeguroID { get; set; }
-        public DateTime DataOcorrencia { get; set; }
+        public DateOnly DataOcorrencia { get; set; }
         public string NumeroSinistro { get; set; }
     }
 }

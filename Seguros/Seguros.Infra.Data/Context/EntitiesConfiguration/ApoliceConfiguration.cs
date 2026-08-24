@@ -15,8 +15,7 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
             builder.Property(x => x.VigenciaInicio).IsRequired();
             builder.Property(x => x.VigenciaFim).IsRequired();
             builder.Property(x => x.SeguradoraID).IsRequired();
-            builder.Property(x => x.TipoSeguro).IsRequired();
-            builder.Property(x => x.Situacao);
+            builder.Property(x => x.TipoSeguro).IsRequired();            
             builder.Property(x => x.Produto).IsRequired();
             builder.Property(x => x.PagamentoID).IsRequired();
             builder.Property(x => x.PremioLiquido).IsRequired();

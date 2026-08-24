@@ -13,10 +13,12 @@ namespace Seguros.Application.Services
     public class PagamentoService : IPagamentoService
     {
         private readonly IPagamentoRepository _pagamentoRepository;
+        private readonly IParcelaRepository _parcelaRepository;
 
-        public PagamentoService(IPagamentoRepository pagamentoRepository)
+        public PagamentoService(IPagamentoRepository pagamentoRepository, IParcelaRepository parcelaRepository)
         {
             _pagamentoRepository = pagamentoRepository;
+            _parcelaRepository = parcelaRepository;
         }
 
         public async Task<PagamentoGetDTO> AddAsync(PagamentoPostDTO pagamentoPostDTO)
@@ -29,6 +31,16 @@ namespace Seguros.Application.Services
             };
 
             var created = await _pagamentoRepository.AddAsync(pagamento);
+            Parcela parcela = new Parcela
+            {
+                PagamentoID = created.Id,
+                Valor = created.ValorTotal / created.QuantidadeParcelas
+            };
+            for (var i = 0; i < created.QuantidadeParcelas; i++)
+            {
+                await _parcelaRepository.AddAsync(parcela);
+            }
+
             return new PagamentoGetDTO
             {
                 Id = created.Id,
@@ -95,11 +107,34 @@ namespace Seguros.Application.Services
                 TipoPagamento = pagamentoPutDTO.TipoPagamento,
                 ValorTotal = pagamentoPutDTO.ValorTotal,
                 QuantidadeParcelas = pagamentoPutDTO.QuantidadeParcelas
-            };
+            };            
 
-            var updated = await _pagamentoRepository.UpdateAsync(pagamento);
-            if (updated == null)
+            var pagamentoOld = await _pagamentoRepository.GetByIdAsync(pagamento.Id);
+            if (pagamentoOld == null)
                 return null;
+            var updated = await _pagamentoRepository.UpdateAsync(pagamento);            
+            if (updated.QuantidadeParcelas != pagamentoOld.QuantidadeParcelas)
+            {
+                var parcelas = await _parcelaRepository.GetAllAsync();
+                parcelas.Where(p => p.PagamentoID == pagamento.Id);
+                foreach (var p in parcelas)
+                {
+                    await _parcelaRepository.DeleteAsync(p.Id);
+                }
+                for (var i = 0; i < pagamento.QuantidadeParcelas; i++)
+                {
+                    await _parcelaRepository.AddAsync(new Parcela { PagamentoID = pagamento.Id, Valor = pagamento.ValorTotal / pagamento.QuantidadeParcelas });
+                }
+            } else 
+            {
+                var parcelas = await _parcelaRepository.GetAllAsync();
+                parcelas.Where(p => p.PagamentoID == pagamento.Id);
+                foreach (var p in parcelas)
+                {
+                    await _parcelaRepository.UpdateAsync(p);
+                }
+            }
+
 
             return new PagamentoGetDTO
             {
@@ -108,6 +143,7 @@ namespace Seguros.Application.Services
                 ValorTotal = updated.ValorTotal,
                 QuantidadeParcelas = updated.QuantidadeParcelas
             };
+                        
         }
     }
 }

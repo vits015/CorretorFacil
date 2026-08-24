@@ -14,7 +14,7 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
             builder.HasKey(x => x.Id);
             builder.Property(x => x.PagamentoID).IsRequired();
             builder.Property(x => x.Valor).IsRequired();
-            builder.Property(x => x.DataVencimento);            
+            builder.Property(x => x.DataVencimento).IsRequired(false);
         }
     }
 }
