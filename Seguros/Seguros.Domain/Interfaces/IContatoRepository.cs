@@ -7,7 +7,7 @@ namespace Seguros.Domain.Interfaces
 {
     public interface IContatoRepository
     {
-        Task<Contato> GetByIdAsync(int id);
+        Task<Contato> GetByIdAsync(int? id);
         Task<List<Contato>> GetAllAsync();
         Task<Contato> AddAsync(Contato contato);
         Task<Contato> UpdateAsync(Contato contato);

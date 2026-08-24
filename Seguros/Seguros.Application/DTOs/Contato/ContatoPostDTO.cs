@@ -13,9 +13,8 @@ namespace Seguros.Application.DTOs.Contato
 
         [Required(ErrorMessage = "O campo Descrição é obrigatório.")]
         [MaxLength(100, ErrorMessage = "A Descrição deve ter, no máximo, 100 caracteres.")]
-        public string Descricao { get; set; }
-
-        [Required(ErrorMessage = "O campo Cliente ID é obrigatório.")]
-        public int ClienteId { get; set; }
+        public string Descricao { get; set; }        
+        public int? ClienteId { get; set; }
+        public int? SeguradoraId { get; set; }
     }
 }

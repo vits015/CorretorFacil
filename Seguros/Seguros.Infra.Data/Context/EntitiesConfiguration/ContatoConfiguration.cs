@@ -13,8 +13,16 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Nome).IsRequired().HasMaxLength(100);
-            builder.Property(x => x.ClienteID);
-            builder.Property(x => x.SeguradoraID);
+            builder.HasOne<Cliente>()
+                .WithMany(c => c.Contatos)
+                .HasForeignKey(x => x.ClienteID)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull); // ou Restrict
+            builder.HasOne<Seguradora>()
+                .WithMany(s => s.Contatos)
+                .HasForeignKey(x => x.SeguradoraID)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
             builder.Property(x => x.Descricao).IsRequired().HasMaxLength(100);                           
         }
     }

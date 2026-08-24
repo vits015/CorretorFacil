@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Seguros.Infra.Data.Context;
@@ -11,9 +12,11 @@ using Seguros.Infra.Data.Context;
 namespace Seguros.Infra.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260824143017_updateEntitiesColumnName")]
+    partial class updateEntitiesColumnName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace Seguros.Infra.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClienteID")
+                    b.Property<int>("ClienteID")
                         .HasColumnType("integer");
 
                     b.Property<string>("Descricao")
@@ -140,7 +143,7 @@ namespace Seguros.Infra.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("SeguradoraID")
+                    b.Property<int>("SeguradoraID")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -355,12 +358,14 @@ namespace Seguros.Infra.Data.Migrations
                     b.HasOne("Seguros.Domain.Entities.Cliente", null)
                         .WithMany("Contatos")
                         .HasForeignKey("ClienteID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Seguros.Domain.Entities.Seguradora", null)
                         .WithMany("Contatos")
                         .HasForeignKey("SeguradoraID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Seguros.Domain.Entities.Endereco", b =>

@@ -8,7 +8,7 @@ namespace Seguros.Application.Interfaces
 {
     public interface IContatoService
     {
-        Task<ContatoGetDTO> GetByIdAsync(int id);
+        Task<ContatoGetDTO> GetByIdAsync(int? id);
         Task<List<ContatoGetDTO>> GetAllAsync();
         Task<ContatoGetDTO> AddAsync(ContatoPostDTO contatoPostDTO);
         Task<ContatoGetDTO> UpdateAsync(ContatoPutDTO contatoPutDTO);

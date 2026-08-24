@@ -11,7 +11,7 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<Seguradora> builder)
         {
-            builder.HasKey(x => x.ID);
+            builder.HasKey(x => x.Id);
             builder.Property(x => x.Nome).IsRequired().HasMaxLength(100);
         }
     }

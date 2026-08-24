@@ -25,7 +25,7 @@ namespace Seguros.Infra.Data.Repositories
 
         public async Task<Seguradora> DeleteAsync(int id)
         {
-            Seguradora seguradora = await _context.Seguradora.Where(s => s.ID == id).FirstOrDefaultAsync();
+            Seguradora seguradora = await _context.Seguradora.Where(s => s.Id == id).FirstOrDefaultAsync();
             if (seguradora == null)
                 return null;
             _context.Seguradora.Remove(seguradora);
@@ -38,9 +38,9 @@ namespace Seguros.Infra.Data.Repositories
             return await _context.Seguradora.ToListAsync();
         }
 
-        public async Task<Seguradora> GetByIdAsync(int id)
+        public async Task<Seguradora> GetByIdAsync(int? id)
         {
-            return await _context.Seguradora.Where(s => s.ID == id).FirstOrDefaultAsync();
+            return await _context.Seguradora.Where(s => s.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Seguradora> UpdateAsync(Seguradora seguradora)

@@ -8,7 +8,7 @@ namespace Seguros.Application.Interfaces
 {
     public interface IClienteService
     {
-        Task<ClienteGetDTO> GetByIdAsync(int id);
+        Task<ClienteGetDTO> GetByIdAsync(int? id);
         Task<List<ClienteGetDTO>> GetAllAsync();
         Task<List<ClienteDetailsGetDTO>> GetAllDetailsAsync();
         Task<ClienteDetailsGetDTO> GetDetailsByIdAsync(int id);

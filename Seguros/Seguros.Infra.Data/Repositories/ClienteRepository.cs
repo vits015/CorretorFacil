@@ -39,7 +39,7 @@ namespace Seguros.Infra.Data.Repositories
             return await _context.Cliente.Where(c => !c.Excluido).ToListAsync();
         }
 
-        public async Task<Cliente> GetByIdAsync(int id)
+        public async Task<Cliente> GetByIdAsync(int? id)
         {
             return await _context.Cliente.Where(c => c.Id == id && !c.Excluido).FirstOrDefaultAsync();      
         }

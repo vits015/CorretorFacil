@@ -14,24 +14,37 @@ namespace Seguros.Application.Services
     {
         private readonly IContatoRepository _contatoRepository;
         private readonly IClienteRepository _clienteRepository;
+        private readonly ISeguradoraRepository _seguradoraRepository;
 
-        public ContatoService(IContatoRepository contatoRepository, IClienteRepository clienteRepository)
+        public ContatoService(IContatoRepository contatoRepository, IClienteRepository clienteRepository, ISeguradoraRepository seguradoraRepository)
         {
             _contatoRepository = contatoRepository;
             _clienteRepository = clienteRepository;
+            _seguradoraRepository = seguradoraRepository;
         }
 
         public async Task<ContatoGetDTO> AddAsync(ContatoPostDTO contatoPostDTO)
         {
-            var cliente = await _clienteRepository.GetByIdAsync(contatoPostDTO.ClienteId);
-            if (cliente == null)
-                throw new NotFoundException("Cliente não encontrado");
+            if (contatoPostDTO.ClienteId != null)
+            {                
+                var cliente = await _clienteRepository.GetByIdAsync(contatoPostDTO.ClienteId);
+                if (cliente == null)
+                    throw new NotFoundException("Cliente não encontrado");
+            } else if (contatoPostDTO.SeguradoraId != null)
+            {
+                var seguradora = await _seguradoraRepository.GetByIdAsync(contatoPostDTO.SeguradoraId);
+                if (seguradora == null)
+                    throw new NotFoundException("Seguradora não encontrada");                    
+            } else {
+                throw new BadRequestException("SeguradoraID e ClienteID não podem ser nulos");
+            }
 
             var contato = new Contato
             {
                 Nome = contatoPostDTO.Nome,
                 Descricao = contatoPostDTO.Descricao,
-                ClienteID = contatoPostDTO.ClienteId
+                ClienteID = contatoPostDTO.ClienteId,
+                SeguradoraID = contatoPostDTO.SeguradoraId
             };
 
             var created = await _contatoRepository.AddAsync(contato);
@@ -39,8 +52,7 @@ namespace Seguros.Application.Services
             {
                 Id = created.Id,
                 Nome = created.Nome,
-                Descricao = created.Descricao,
-                ClienteID = created.ClienteID
+                Descricao = created.Descricao
             };
         }
 
@@ -54,8 +66,7 @@ namespace Seguros.Application.Services
             {
                 Id = deleted.Id,
                 Nome = deleted.Nome,
-                Descricao = deleted.Descricao,
-                ClienteID = deleted.ClienteID
+                Descricao = deleted.Descricao
             };
         }
 
@@ -70,15 +81,14 @@ namespace Seguros.Application.Services
                 {
                     Id = c.Id,
                     Nome = c.Nome,
-                    Descricao = c.Descricao,
-                    ClienteID = c.ClienteID
+                    Descricao = c.Descricao
                 });
             }
 
             return dtos;
         }
 
-        public async Task<ContatoGetDTO> GetByIdAsync(int id)
+        public async Task<ContatoGetDTO> GetByIdAsync(int? id)
         {
             var contato = await _contatoRepository.GetByIdAsync(id);
             if (contato == null)
@@ -88,8 +98,7 @@ namespace Seguros.Application.Services
             {
                 Id = contato.Id,
                 Nome = contato.Nome,
-                Descricao = contato.Descricao,
-                ClienteID = contato.ClienteID
+                Descricao = contato.Descricao
             };
         }
 
@@ -110,8 +119,7 @@ namespace Seguros.Application.Services
             {
                 Id = updated.Id,
                 Nome = updated.Nome,
-                Descricao = updated.Descricao,
-                ClienteID = updated.ClienteID
+                Descricao = updated.Descricao
             };
         }
     }

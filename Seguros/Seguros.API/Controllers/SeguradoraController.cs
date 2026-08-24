@@ -64,5 +64,22 @@ namespace Seguros.API.Controllers
             var seguradoras = await _seguradoraService.GetAllAsync();
             return Ok(seguradoras);
         }
+
+        [HttpGet("details")]
+        public async Task<ActionResult> GetAllSeguradorasDetails()
+        {
+            var seguradoras = await _seguradoraService.GetAllDetailsAsync();
+            return Ok(seguradoras);
+        }
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult> GetSeguradoraDetails(int id)
+        {
+            var seguradora = await _seguradoraService.GetDetailsByIdAsync(id);
+            if (seguradora == null)
+            {
+                return NotFound("Seguradora não encontrada.");
+            }
+            return Ok(seguradora);
+        }
     }
 }

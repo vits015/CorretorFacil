@@ -5,18 +5,23 @@ using Seguros.Domain.Entities;
 using Seguros.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seguros.Application.DTOs.Contato;
 
 namespace Seguros.Application.Services
 {
     public class SeguradoraService : ISeguradoraService
     {
         private readonly ISeguradoraRepository _seguradoraRepository;
+        private readonly IContatoRepository _contatoRepository;
 
-        public SeguradoraService(ISeguradoraRepository seguradoraRepository)
+        public SeguradoraService(ISeguradoraRepository seguradoraRepository, IContatoRepository contatoRepository)
         {
             _seguradoraRepository = seguradoraRepository;
+            _contatoRepository = contatoRepository;
+            
         }
 
         public async Task<SeguradoraGetDTO> AddAsync(SeguradoraPostDTO seguradoraPostDTO)
@@ -29,7 +34,7 @@ namespace Seguros.Application.Services
             var created = await _seguradoraRepository.AddAsync(seguradora);
             return new SeguradoraGetDTO
             {
-                ID = created.ID,
+                Id = created.Id,
                 Nome = created.Nome
             };
         }
@@ -42,7 +47,7 @@ namespace Seguros.Application.Services
 
             return new SeguradoraGetDTO
             {
-                ID = deleted.ID,
+                Id = deleted.Id,
                 Nome = deleted.Nome
             };
         }
@@ -56,15 +61,44 @@ namespace Seguros.Application.Services
             {
                 dtos.Add(new SeguradoraGetDTO
                 {
-                    ID = s.ID,
+                    Id = s.Id,
                     Nome = s.Nome
                 });
             }
 
             return dtos;
         }
+        public async Task<List<SeguradoraDetailsGetDTO>> GetAllDetailsAsync()
+        {
+            var seguradoras = await _seguradoraRepository.GetAllAsync();
+            var contatosSeguradora = await _contatoRepository.GetAllAsync();
+            var dtos = new List<SeguradoraDetailsGetDTO>();
 
-        public async Task<SeguradoraGetDTO> GetByIdAsync(int id)
+            foreach (var s in seguradoras)
+            {
+                var contatos = new List<ContatoGetDTO>();
+                foreach (var c in contatosSeguradora.Where(c => c.SeguradoraID == s.Id))
+                {
+                    contatos.Add(new ContatoGetDTO
+                    {
+                        Id = c.Id,
+                        Nome = c.Nome,
+                        Descricao = c.Descricao
+                    });
+                }
+
+                dtos.Add(new SeguradoraDetailsGetDTO
+                {
+                    Id = s.Id,
+                    Nome = s.Nome,
+                    Contatos = contatos
+                });
+            }
+
+            return dtos;
+        }
+
+        public async Task<SeguradoraGetDTO> GetByIdAsync(int? id)
         {
             var seguradora = await _seguradoraRepository.GetByIdAsync(id);
             if (seguradora == null)
@@ -72,8 +106,34 @@ namespace Seguros.Application.Services
 
             return new SeguradoraGetDTO
             {
-                ID = seguradora.ID,
+                Id = seguradora.Id,
                 Nome = seguradora.Nome
+            };
+        }
+
+        public async Task<SeguradoraDetailsGetDTO> GetDetailsByIdAsync(int id)
+        {
+            var seguradora = await _seguradoraRepository.GetByIdAsync(id);
+            if (seguradora == null)
+                return null;
+            var contatosSeguradora = await _contatoRepository.GetAllAsync();
+            contatosSeguradora.Where(c => c.SeguradoraID == seguradora.Id);
+            var contatos = new List<ContatoGetDTO>();
+            foreach (var c in contatosSeguradora)
+            {
+                contatos.Add(new ContatoGetDTO
+                {
+                    Id = c.Id,
+                    Nome = c.Nome,
+                    Descricao = c.Descricao
+                });
+            }
+
+            return new SeguradoraDetailsGetDTO
+            {
+                Id = seguradora.Id,
+                Nome = seguradora.Nome,
+                Contatos = contatos                                    
             };
         }
 
@@ -81,7 +141,7 @@ namespace Seguros.Application.Services
         {
             var seguradora = new Seguradora
             {
-                ID = seguradoraPutDTO.ID,
+                Id = seguradoraPutDTO.Id,
                 Nome = seguradoraPutDTO.Nome
             };
 
@@ -91,7 +151,7 @@ namespace Seguros.Application.Services
 
             return new SeguradoraGetDTO
             {
-                ID = updated.ID,
+                Id = updated.Id,
                 Nome = updated.Nome
             };
         }

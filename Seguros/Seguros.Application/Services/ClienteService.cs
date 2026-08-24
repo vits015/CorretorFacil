@@ -96,7 +96,7 @@ namespace Seguros.Application.Services
             return clienteDetailsGetDTOs;
         }
 
-        public async Task<ClienteGetDTO> GetByIdAsync(int id)
+        public async Task<ClienteGetDTO> GetByIdAsync(int? id)
         {
             var cliente = await _clienteRepository.GetByIdAsync(id);
             if (cliente == null)

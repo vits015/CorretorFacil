@@ -38,7 +38,7 @@ namespace Seguros.Infra.Data.Repositories
             return await _context.Contato.ToListAsync();
         }
 
-        public async Task<Contato> GetByIdAsync(int id)
+        public async Task<Contato> GetByIdAsync(int? id)
         {
             return await _context.Contato.Where(c => c.Id == id).FirstOrDefaultAsync();
         }

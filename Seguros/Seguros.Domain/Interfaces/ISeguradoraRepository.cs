@@ -7,7 +7,7 @@ namespace Seguros.Domain.Interfaces
 {
     public interface ISeguradoraRepository
     {
-        Task<Seguradora> GetByIdAsync(int id);
+        Task<Seguradora> GetByIdAsync(int? id);
         Task<List<Seguradora>> GetAllAsync();
         Task<Seguradora> AddAsync(Seguradora seguradora);
         Task<Seguradora> UpdateAsync(Seguradora seguradora);

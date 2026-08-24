@@ -7,10 +7,10 @@ namespace Seguros.Domain.Interfaces
 {
     public interface IClienteRepository
     {
-        Task<Cliente> GetByIdAsync(int id);
+        Task<Cliente> GetByIdAsync(int? id);
         Task<List<Cliente>> GetAllAsync();
         Task<Cliente> AddAsync(Cliente cliente);
         Task<Cliente> UpdateAsync(Cliente cliente);
-        Task<Cliente> DeleteAsync(int id);
+        Task<Cliente> DeleteAsync(int id);        
     }
 }
