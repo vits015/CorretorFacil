@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Seguros.API.Middleware;
+using Seguros.Infra.Data.Context;
 using Seguros.Infra.Ioc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,5 +48,12 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    dbContext.Database.Migrate();
+}
 
 app.Run();
