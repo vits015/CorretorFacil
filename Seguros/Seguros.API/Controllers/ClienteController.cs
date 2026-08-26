@@ -22,7 +22,9 @@ namespace Seguros.API.Controllers
             {
                 return BadRequest("Não foi possível criar o cliente.");
             }
-            return Ok(new { message = "Cliente criado com sucesso." });
+            return Ok(new { 
+                    message = "Cliente criado com sucesso.",
+                    createdCliente});
         }
         [HttpPut]
         public async Task<ActionResult> UpdateCliente(ClientePutDTO clientePutDTO)

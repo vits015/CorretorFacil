@@ -16,6 +16,7 @@ namespace Seguros.Domain.Entities
         public int PagamentoID { get; set; }
         public double PremioLiquido { get; set; }
         public double Comissao { get; set; }
+        public string linkApolice { get; set; } 
         public bool Excluido { get; set; } = false;        
         public List<Sinistro> Sinistros { get; set; }
     }

@@ -22,7 +22,7 @@ namespace Seguros.API.Controllers
             {
                 return BadRequest("Não foi possível criar a apólice.");
             }
-            return Ok(new { message = "Apólice criada com sucesso." });
+            return Ok(new { message = "Apólice criada com sucesso.", createdApolice });
         }
 
         [HttpPut]

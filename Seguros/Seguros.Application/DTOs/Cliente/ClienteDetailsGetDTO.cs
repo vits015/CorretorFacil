@@ -12,6 +12,9 @@ namespace Seguros.Application.DTOs.Cliente
         public string Nome { get; set; }
         public string CPF { get; set; }
         public string CNPJ { get; set; }
+        public string EstadoCivil { get; set; }
+        public string Sexo { get; set; }
+        public string Profissao { get; set; }
         public List<EnderecoGetDTO> Enderecos { get; set; }
         public List<ContatoGetDTO> Contatos { get; set; }
     }

@@ -38,7 +38,7 @@ namespace Seguros.Application.Services
         public async Task<ApoliceGetDTO> AddAsync(ApolicePostDTO apolicePostDTO)
         {
             Apolice apolice = new Apolice
-            {
+            {                
                 ClienteID = apolicePostDTO.ClienteID,
                 VigenciaInicio = apolicePostDTO.VigenciaInicio,
                 VigenciaFim = apolicePostDTO.VigenciaFim,
@@ -47,11 +47,14 @@ namespace Seguros.Application.Services
                 Produto = apolicePostDTO.Produto,
                 PagamentoID = apolicePostDTO.PagamentoID,
                 PremioLiquido = apolicePostDTO.PremioLiquido,
-                Comissao = apolicePostDTO.Comissao
+                Comissao = apolicePostDTO.Comissao,
+                linkApolice = apolicePostDTO.linkApolice
+
             };
             var result = await _apoliceRepository.AddAsync(apolice);
             return new ApoliceGetDTO
             {                
+                Id = result.Id,
                 ClienteID = result.ClienteID,
                 VigenciaInicio = result.VigenciaInicio,
                 VigenciaFim = result.VigenciaFim,
@@ -60,7 +63,8 @@ namespace Seguros.Application.Services
                 Produto = result.Produto,
                 PagamentoID = result.PagamentoID,
                 PremioLiquido = result.PremioLiquido,
-                Comissao = result.Comissao
+                Comissao = result.Comissao,
+                linkApolice = result.linkApolice
             };
         }
 
@@ -73,6 +77,7 @@ namespace Seguros.Application.Services
             var updatedApolice = await _apoliceRepository.UpdateAsync(apolice);
             return new ApoliceGetDTO
             {                
+                Id = updatedApolice.Id,
                 ClienteID = updatedApolice.ClienteID,
                 VigenciaInicio = updatedApolice.VigenciaInicio,
                 VigenciaFim = updatedApolice.VigenciaFim,
@@ -81,7 +86,8 @@ namespace Seguros.Application.Services
                 Produto = updatedApolice.Produto,
                 PagamentoID = updatedApolice.PagamentoID,
                 PremioLiquido = updatedApolice.PremioLiquido,
-                Comissao = updatedApolice.Comissao
+                Comissao = updatedApolice.Comissao,
+                linkApolice = updatedApolice.linkApolice
             };
 
         }
@@ -91,6 +97,7 @@ namespace Seguros.Application.Services
             var apolices = await _apoliceRepository.GetAllAsync();
             return apolices.Select(a => new ApoliceGetDTO
             {
+                Id = a.Id,
                 ClienteID = a.ClienteID,
                 VigenciaInicio = a.VigenciaInicio,
                 VigenciaFim = a.VigenciaFim,
@@ -99,7 +106,8 @@ namespace Seguros.Application.Services
                 Produto = a.Produto,
                 PagamentoID = a.PagamentoID,
                 PremioLiquido = a.PremioLiquido,
-                Comissao = a.Comissao
+                Comissao = a.Comissao,
+                linkApolice = a.linkApolice
             }).ToList();
         }
 
@@ -132,6 +140,7 @@ namespace Seguros.Application.Services
                 throw new NotFoundException("Apolice não encontrada.");
             return new ApoliceGetDTO
             {
+                Id = apolice.Id,
                 ClienteID = apolice.ClienteID,
                 VigenciaInicio = apolice.VigenciaInicio,
                 VigenciaFim = apolice.VigenciaFim,
@@ -140,7 +149,8 @@ namespace Seguros.Application.Services
                 Produto = apolice.Produto,
                 PagamentoID = apolice.PagamentoID,
                 PremioLiquido = apolice.PremioLiquido,
-                Comissao = apolice.Comissao
+                Comissao = apolice.Comissao,
+                linkApolice = apolice.linkApolice
             };                
         }
 
@@ -172,6 +182,7 @@ namespace Seguros.Application.Services
 
             return new ApoliceGetDTO
             {
+                Id = apoliceUpdated.Id,
                 ClienteID = apoliceUpdated.ClienteID,
                 VigenciaInicio = apoliceUpdated.VigenciaInicio,
                 VigenciaFim = apoliceUpdated.VigenciaFim,
@@ -180,7 +191,8 @@ namespace Seguros.Application.Services
                 Produto = apoliceUpdated.Produto,
                 PagamentoID = apoliceUpdated.PagamentoID,
                 PremioLiquido = apoliceUpdated.PremioLiquido,
-                Comissao = apoliceUpdated.Comissao
+                Comissao = apoliceUpdated.Comissao,
+                linkApolice = apoliceUpdated.linkApolice
             };
         }
 

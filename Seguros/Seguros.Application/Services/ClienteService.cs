@@ -27,15 +27,22 @@ namespace Seguros.Application.Services
             {
                 Nome = clientePostDTO.Nome,
                 CNPJ = clientePostDTO.CNPJ,
-                CPF = clientePostDTO.CPF
+                CPF = clientePostDTO.CPF,
+                EstadoCivil = clientePostDTO.EstadoCivil,
+                Sexo = clientePostDTO.Sexo,
+                Profissao = clientePostDTO.Profissao        
             };
+
             var createdCliente = await _clienteRepository.AddAsync(cliente);
             return new ClienteGetDTO
             {
                 Id = createdCliente.Id,
                 Nome = cliente.Nome,
                 CNPJ = createdCliente.CNPJ,
-                CPF= createdCliente.CPF                
+                CPF= createdCliente.CPF,
+                EstadoCivil = createdCliente.EstadoCivil,
+                Sexo = createdCliente.Sexo,
+                Profissao = createdCliente.Profissao
             };
         }
 
@@ -49,7 +56,10 @@ namespace Seguros.Application.Services
                 Id = deletedCurso.Id,
                 Nome = deletedCurso.Nome,
                 CNPJ = deletedCurso.CNPJ,
-                CPF = deletedCurso.CPF
+                CPF = deletedCurso.CPF,
+                EstadoCivil = deletedCurso.EstadoCivil,
+                Sexo = deletedCurso.Sexo,
+                Profissao = deletedCurso.Profissao
             };
           
         }        
@@ -60,11 +70,13 @@ namespace Seguros.Application.Services
             var clientesGetDTOs = new List<ClienteGetDTO>();
             foreach (var cliente in clientes)
             {
-                clientesGetDTOs.Add(new ClienteGetDTO { 
-                    Id = cliente.Id,
+                clientesGetDTOs.Add(new ClienteGetDTO {
                     Nome = cliente.Nome,
                     CNPJ = cliente.CNPJ,
-                    CPF = cliente.CPF
+                    CPF = cliente.CPF,
+                    EstadoCivil = cliente.EstadoCivil,
+                    Sexo = cliente.Sexo,
+                    Profissao = cliente.Profissao
                 });
             }
             return clientesGetDTOs;
@@ -114,6 +126,9 @@ namespace Seguros.Application.Services
                     Nome = cliente.Nome,
                     CNPJ = cliente.CNPJ,
                     CPF = cliente.CPF,
+                    EstadoCivil = cliente.EstadoCivil,
+                    Sexo = cliente.Sexo,
+                    Profissao = cliente.Profissao,
                     Enderecos = enderecosDoCliente,
                     Contatos = contatosDoCliente
                 });
@@ -132,7 +147,10 @@ namespace Seguros.Application.Services
                 Id = cliente.Id,
                 Nome = cliente.Nome,
                 CNPJ = cliente.CNPJ,
-                CPF = cliente.CPF
+                CPF = cliente.CPF,
+                EstadoCivil = cliente.EstadoCivil,
+                Sexo = cliente.Sexo,
+                Profissao = cliente.Profissao,
             };
         }
 
@@ -148,7 +166,10 @@ namespace Seguros.Application.Services
                 Id = clientePutDTO.Id,
                 Nome = clientePutDTO.Nome,
                 CPF = clientePutDTO.CPF,
-                CNPJ = clientePutDTO.CNPJ
+                CNPJ = clientePutDTO.CNPJ,
+                EstadoCivil = clientePutDTO.EstadoCivil,
+                Sexo = clientePutDTO.Sexo,
+                Profissao = clientePutDTO.Profissao
             };
             var updatedCliente = await _clienteRepository.UpdateAsync(cliente);
             if (updatedCliente == null)
@@ -158,7 +179,10 @@ namespace Seguros.Application.Services
                 Id = updatedCliente.Id,
                 Nome = updatedCliente.Nome,
                 CPF = updatedCliente.CPF,
-                CNPJ = updatedCliente.CNPJ
+                CNPJ = updatedCliente.CNPJ,
+                EstadoCivil = updatedCliente.EstadoCivil,
+                Sexo = updatedCliente.Sexo,
+                Profissao = updatedCliente.Profissao
             };
 
         }

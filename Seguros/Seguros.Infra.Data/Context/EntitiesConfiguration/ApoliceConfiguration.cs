@@ -21,6 +21,7 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
             builder.Property(x => x.PremioLiquido).IsRequired();
             builder.Property(x => x.Comissao).IsRequired();
             builder.Property(x => x.Excluido).IsRequired();
+            builder.Property(x => x.linkApolice).IsRequired(false);
         }
     }
 }

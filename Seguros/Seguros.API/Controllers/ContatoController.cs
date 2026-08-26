@@ -22,7 +22,10 @@ namespace Seguros.API.Controllers
             {
                 return BadRequest("Não foi possível criar o contato.");
             }
-            return Ok(new { message = "Contato criado com sucesso." });
+            return Ok(new { 
+                message = "Contato criado com sucesso.",
+                createdContato
+            });
         }
 
         [HttpPut]

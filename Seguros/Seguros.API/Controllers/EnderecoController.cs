@@ -21,7 +21,9 @@ namespace Seguros.API.Controllers
         {
             var created = await _enderecoService.AddAsync(enderecoPostDTO);
             if (created == null) return BadRequest("Não foi possível criar o endereço.");
-            return Ok(new { message = "Endereço criado com sucesso." });
+            return Ok(new { 
+                  message = "Endereço criado com sucesso.",
+                  created});
         }
 
         [HttpPut]

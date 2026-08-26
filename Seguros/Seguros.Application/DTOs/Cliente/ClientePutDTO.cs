@@ -16,6 +16,9 @@ namespace Seguros.Application.DTOs.Cliente
         [MaxLength(11, ErrorMessage = "O CPF deve ter, no máximo, 11 caracteres.")]
         public string CPF { get; set; }
         [MaxLength(14, ErrorMessage = "O CNPJ deve ter, no máximo, 14 caracteres.")]
-        public string CNPJ { get; set; }        
+        public string CNPJ { get; set; }
+        public string EstadoCivil { get; set; }
+        public string Sexo { get; set; }
+        public string Profissao { get; set; }
     }
 }
