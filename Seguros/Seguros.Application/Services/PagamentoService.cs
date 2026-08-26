@@ -31,14 +31,13 @@ namespace Seguros.Application.Services
             };
 
             var created = await _pagamentoRepository.AddAsync(pagamento);
-            Parcela parcela = new Parcela
-            {
-                PagamentoID = created.Id,
-                Valor = created.ValorTotal / created.QuantidadeParcelas
-            };
             for (var i = 0; i < created.QuantidadeParcelas; i++)
             {
-                await _parcelaRepository.AddAsync(parcela);
+                await _parcelaRepository.AddAsync(new Parcela
+                {
+                    PagamentoID = created.Id,
+                    Valor = created.ValorTotal / created.QuantidadeParcelas
+                });
             }
 
             return new PagamentoGetDTO
@@ -112,7 +111,11 @@ namespace Seguros.Application.Services
             var pagamentoOld = await _pagamentoRepository.GetByIdAsync(pagamento.Id);
             if (pagamentoOld == null)
                 return null;
-            var updated = await _pagamentoRepository.UpdateAsync(pagamento);            
+            pagamentoOld.Parcelas = pagamento.Parcelas;
+            pagamentoOld.QuantidadeParcelas = pagamento.QuantidadeParcelas;
+            pagamentoOld.TipoPagamento = pagamento.TipoPagamento;
+            pagamentoOld.ValorTotal = pagamento.ValorTotal;
+            var updated = await _pagamentoRepository.UpdateAsync(pagamentoOld);            
             if (updated.QuantidadeParcelas != pagamentoOld.QuantidadeParcelas)
             {
                 var parcelas = await _parcelaRepository.GetAllAsync();

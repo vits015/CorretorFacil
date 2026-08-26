@@ -15,6 +15,7 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
             builder.HasKey(x => x.ID);       
             builder.Property(x => x.DataOcorrencia).IsRequired();
             builder.Property(x => x.NumeroSinistro).HasMaxLength(20).IsRequired();
+            builder.Property(x => x.ApoliceId).IsRequired();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Seguros.Application.DTOs.Sinistro
     public class SinistroPostDTO
     {
         [Required(ErrorMessage = "O campo Seguro ID é obrigatório.")]
-        public int SeguroID { get; set; }
+        public int ApoliceId { get; set; }
 
         [Required(ErrorMessage = "O campo Data de Ocorrência é obrigatório.")]
         public DateOnly DataOcorrencia { get; set; }

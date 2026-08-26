@@ -23,13 +23,13 @@ namespace Seguros.Application.Services
 
         public async Task<SinistroGetDTO> AddAsync(SinistroPostDTO sinistroPostDTO)
         {
-            var apolice = await _apoliceRepository.GetByIdAsync(sinistroPostDTO.SeguroID);
+            var apolice = await _apoliceRepository.GetByIdAsync(sinistroPostDTO.ApoliceId);
             if (apolice == null)
                 throw new NotFoundException("Apólice não encontrada");
 
             var sinistro = new Sinistro
             {
-                SeguroID = sinistroPostDTO.SeguroID,
+                ApoliceId = sinistroPostDTO.ApoliceId,
                 DataOcorrencia = sinistroPostDTO.DataOcorrencia,
                 NumeroSinistro = sinistroPostDTO.NumeroSinistro
             };
@@ -78,7 +78,7 @@ namespace Seguros.Application.Services
             var sinistro = new Sinistro
             {
                 ID = sinistroPutDTO.ID,
-                SeguroID = sinistroPutDTO.SeguroID,
+                ApoliceId = sinistroPutDTO.SeguroID,
                 DataOcorrencia = sinistroPutDTO.DataOcorrencia,
                 NumeroSinistro = sinistroPutDTO.NumeroSinistro
             };
@@ -95,7 +95,7 @@ namespace Seguros.Application.Services
             return new SinistroGetDTO
             {
                 ID = sinistro.ID,
-                SeguroID = sinistro.SeguroID,
+                ApoliceId = sinistro.ApoliceId,
                 DataOcorrencia = sinistro.DataOcorrencia,
                 NumeroSinistro = sinistro.NumeroSinistro
             };

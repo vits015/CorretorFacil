@@ -22,7 +22,7 @@ namespace Seguros.API.Controllers
             {
                 return BadRequest("Não foi possível criar o pagamento.");
             }
-            return Ok(new { message = "Pagamento criado com sucesso." });
+            return Ok(new { message = "Pagamento criado com sucesso.", createdPagamento });
         }
 
         [HttpPut]

@@ -2,19 +2,17 @@
 
 # Esta fase é usada durante a execução no VS no modo rápido (Padrão para a configuração de Depuração)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8081
+
 
 # Esta fase é usada para compilar o projeto de serviço
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Seguros.API/Seguros.API.csproj", "Seguros.API/"]
-COPY ["Seguros.Application/Seguros.Application.csproj", "Seguros.Application/"]
-COPY ["Seguros.Domain/Seguros.Domain.csproj", "Seguros.Domain/"]
-COPY ["Seguros.Infra.Data/Seguros.Infra.Data.csproj", "Seguros.Infra.Data/"]
-COPY ["Seguros.Infra.Ioc/Seguros.Infra.Ioc.csproj", "Seguros.Infra.Ioc/"]
 RUN dotnet restore "./Seguros.API/Seguros.API.csproj"
 COPY . .
 WORKDIR "/src/Seguros.API"

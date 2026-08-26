@@ -95,6 +95,7 @@ namespace Seguros.Application.Services
         public async Task<List<ApoliceGetDTO>> GetAllAsync()
         {
             var apolices = await _apoliceRepository.GetAllAsync();
+            apolices.Where(ap => ap.Excluido == false);
             return apolices.Select(a => new ApoliceGetDTO
             {
                 Id = a.Id,
@@ -113,7 +114,7 @@ namespace Seguros.Application.Services
 
         public async Task<List<ApoliceDetailsGetDTO>> GetAllDetailsAsync()
         {
-            var apolices = await _apoliceRepository.GetAllAsync();
+            var apolices = await _apoliceRepository.GetAllAsync();            
             var clientes = await _clienteRepository.GetAllAsync();
             var seguradoras = await _seguradoraRepository.GetAllAsync();
             var pagamentos = await _pagamentoRepository.GetAllAsync();
@@ -122,12 +123,15 @@ namespace Seguros.Application.Services
 
             foreach (var a in apolices)
             {
-                dtos.Add(MapToDetails(
-                    a,
-                    clientes.FirstOrDefault(c => c.Id == a.ClienteID),
-                    seguradoras.FirstOrDefault(s => s.Id == a.SeguradoraID),
-                    pagamentos.FirstOrDefault(p => p.Id == a.PagamentoID),
-                    sinistros.Where(s => s.SeguroID == a.Id)));
+                if (a.Excluido == false)
+                {
+                    dtos.Add(MapToDetails(
+                        a,
+                        clientes.FirstOrDefault(c => c.Id == a.ClienteID),
+                        seguradoras.FirstOrDefault(s => s.Id == a.SeguradoraID),
+                        pagamentos.FirstOrDefault(p => p.Id == a.PagamentoID),
+                        sinistros.Where(s => s.ApoliceId == a.Id)));
+                }
             }
 
             return dtos;
@@ -136,7 +140,7 @@ namespace Seguros.Application.Services
         public async Task<ApoliceGetDTO> GetByIdAsync(int id)
         {
             var apolice = await _apoliceRepository.GetByIdAsync(id);
-            if (apolice == null)
+            if (apolice == null || apolice.Excluido)
                 throw new NotFoundException("Apolice não encontrada.");
             return new ApoliceGetDTO
             {
@@ -157,7 +161,7 @@ namespace Seguros.Application.Services
         public async Task<ApoliceDetailsGetDTO> GetDetailsByIdAsync(int id)
         {
             var apolice = await _apoliceRepository.GetByIdAsync(id);
-            if (apolice == null)
+            if (apolice == null || apolice.Excluido)
                 return null;
 
             var cliente = await _clienteRepository.GetByIdAsync(apolice.ClienteID);
@@ -170,14 +174,25 @@ namespace Seguros.Application.Services
                 cliente,
                 seguradora,
                 pagamento,
-                sinistros.Where(s => s.SeguroID == apolice.Id));
+                sinistros.Where(s => s.ApoliceId == apolice.Id));
         }
 
         public async Task<ApoliceGetDTO> UpdateAsync(ApolicePutDTO apolicePutDTO)
         {
             var apolice = await _apoliceRepository.GetByIdAsync(apolicePutDTO.Id);
-            if (apolice == null)
+            if (apolice == null || apolice.Excluido)
                 throw new NotFoundException("Apolice não encontrada.");
+
+            apolice.Id = apolicePutDTO.Id;
+            apolice.linkApolice = apolicePutDTO.linkApolice;
+            apolice.PagamentoID = apolicePutDTO.PagamentoID;
+            apolice.PremioLiquido = apolicePutDTO.PremioLiquido;
+            apolice.Produto = apolicePutDTO.Produto;
+            apolice.SeguradoraID = apolicePutDTO.SeguradoraID;
+            apolice.TipoSeguro = apolicePutDTO.TipoSeguro;
+            apolice.VigenciaFim = apolicePutDTO.VigenciaFim;
+            apolice.VigenciaInicio = apolicePutDTO.VigenciaInicio;            
+
             var apoliceUpdated = await _apoliceRepository.UpdateAsync(apolice);
 
             return new ApoliceGetDTO
@@ -209,7 +224,7 @@ namespace Seguros.Application.Services
                 sinistrosDto.Add(new SinistroGetDTO
                 {
                     ID = s.ID,
-                    SeguroID = s.SeguroID,
+                    ApoliceId = s.ApoliceId,
                     DataOcorrencia = s.DataOcorrencia,
                     NumeroSinistro = s.NumeroSinistro
                 });
