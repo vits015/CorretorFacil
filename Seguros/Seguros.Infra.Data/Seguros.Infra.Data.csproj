@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Seguros.Domain\Seguros.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

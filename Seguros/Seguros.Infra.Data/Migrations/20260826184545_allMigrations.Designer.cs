@@ -12,8 +12,8 @@ using Seguros.Infra.Data.Context;
 namespace Seguros.Infra.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260826111626_updateSinistro")]
-    partial class updateSinistro
+    [Migration("20260826184545_allMigrations")]
+    partial class allMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
