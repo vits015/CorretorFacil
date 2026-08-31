@@ -16,6 +16,7 @@ namespace Seguros.Application.DTOs.Apolice
         public int PagamentoID { get; set; }
         public double PremioLiquido { get; set; }
         public double Comissao { get; set; }
-        public string linkApolice { get; set; }
+        public string? LinkArquivos { get; set; }
+        public string? CaminhoArquivo { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace Seguros.Application.DTOs.Apolice
         public double PremioLiquido { get; set; }
         [Required(ErrorMessage = "A Comissão é obrigatória.")]
         public double Comissao { get; set; }
-        public string? linkApolice { get; set; }
+        public string? LinkArquivos { get; set; }
+        public string? CaminhoArquivo { get; set; }
     }
 }

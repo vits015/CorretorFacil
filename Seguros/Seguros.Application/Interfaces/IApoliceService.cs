@@ -14,6 +14,7 @@ namespace Seguros.Application.Interfaces
         Task<ApoliceDetailsGetDTO> GetDetailsByIdAsync(int id);
         Task<ApoliceGetDTO> AddAsync(ApolicePostDTO apolicePostDTO);
         Task<ApoliceGetDTO> UpdateAsync(ApolicePutDTO apolicePutDTO);
+        Task<ApoliceGetDTO> AtualizarCaminhoArquivoAsync(int id, string caminhoArquivo);
         Task<ApoliceGetDTO> DeleteAsync(int id);
     }
 }

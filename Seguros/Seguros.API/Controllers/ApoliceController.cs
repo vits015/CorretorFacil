@@ -156,5 +156,29 @@ namespace Seguros.API.Controllers
                 contentType = request.ContentType
             });
         }
+
+        [HttpPut("{id:int}/arquivo")]
+        public async Task<ActionResult> SalvarCaminhoArquivo(
+            int id,
+            [FromBody] CaminhoArquivoRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.CaminhoArquivo))
+            {
+                return BadRequest(
+                    "O caminho do arquivo é obrigatório.");
+            }
+
+            var apolice =
+                await _apoliceService.AtualizarCaminhoArquivoAsync(
+                    id,
+                    request.CaminhoArquivo);
+
+            return Ok(apolice);
+        }
+    }
+
+    public class CaminhoArquivoRequest
+    {
+        public string CaminhoArquivo { get; set; } = string.Empty;
     }
 };
