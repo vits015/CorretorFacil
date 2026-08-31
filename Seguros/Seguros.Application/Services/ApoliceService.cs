@@ -1,5 +1,6 @@
 ﻿using Seguros.Application.DTOs.Apolice;
 using Seguros.Application.DTOs.Cliente;
+using Seguros.Application.DTOs.ArquivoApolice;
 using Seguros.Application.DTOs.Pagamento;
 using Seguros.Application.DTOs.Seguradora;
 using Seguros.Application.DTOs.Sinistro;
@@ -21,19 +22,22 @@ namespace Seguros.Application.Services
         private readonly ISeguradoraRepository _seguradoraRepository;
         private readonly IPagamentoRepository _pagamentoRepository;
         private readonly ISinistroRepository _sinistroRepository;
+        private readonly IArquivoApoliceService _arquivoApoliceService;
 
         public ApoliceService(
             IApoliceRepository apoliceRepository,
             IClienteRepository clienteRepository,
             ISeguradoraRepository seguradoraRepository,
             IPagamentoRepository pagamentoRepository,
-            ISinistroRepository sinistroRepository)
+            ISinistroRepository sinistroRepository,
+            IArquivoApoliceService arquivoApoliceService)
         {
             _apoliceRepository = apoliceRepository;
             _clienteRepository = clienteRepository;
             _seguradoraRepository = seguradoraRepository;
             _pagamentoRepository = pagamentoRepository;
             _sinistroRepository = sinistroRepository;
+            _arquivoApoliceService = arquivoApoliceService;
         }
         public async Task<ApoliceGetDTO> AddAsync(ApolicePostDTO apolicePostDTO)
         {
@@ -125,12 +129,17 @@ namespace Seguros.Application.Services
             {
                 if (a.Excluido == false)
                 {
-                    dtos.Add(MapToDetails(
+                    var detalhe = MapToDetails(
                         a,
                         clientes.FirstOrDefault(c => c.Id == a.ClienteID),
                         seguradoras.FirstOrDefault(s => s.Id == a.SeguradoraID),
                         pagamentos.FirstOrDefault(p => p.Id == a.PagamentoID),
-                        sinistros.Where(s => s.ApoliceId == a.Id)));
+                        sinistros.Where(s => s.ApoliceId == a.Id));
+
+                    detalhe.Arquivos =
+                        await _arquivoApoliceService.GetByApoliceIdAsync(a.Id);
+
+                    dtos.Add(detalhe);
                 }
             }
 
@@ -169,12 +178,17 @@ namespace Seguros.Application.Services
             var pagamento = await _pagamentoRepository.GetByIdAsync(apolice.PagamentoID);
             var sinistros = await _sinistroRepository.GetAllAsync();
 
-            return MapToDetails(
+            var detalhe = MapToDetails(
                 apolice,
                 cliente,
                 seguradora,
                 pagamento,
                 sinistros.Where(s => s.ApoliceId == apolice.Id));
+
+            detalhe.Arquivos =
+                await _arquivoApoliceService.GetByApoliceIdAsync(apolice.Id);
+
+            return detalhe;
         }
 
         public async Task<ApoliceGetDTO> UpdateAsync(ApolicePutDTO apolicePutDTO)

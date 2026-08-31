@@ -1,5 +1,6 @@
 ﻿using Seguros.Application.DTOs.Cliente;
 using Seguros.Application.DTOs.Pagamento;
+using Seguros.Application.DTOs.ArquivoApolice;
 using Seguros.Application.DTOs.Seguradora;
 using Seguros.Application.DTOs.Sinistro;
 using System;
@@ -22,5 +23,6 @@ namespace Seguros.Application.DTOs.Apolice
         public double Comissao { get; set; }
         public string? LinkArquivos { get; set; }
         public List<SinistroGetDTO> Sinistros { get; set; }
+        public List<ArquivoApoliceGetDTO> Arquivos { get; set; } = new();
     }
 }
