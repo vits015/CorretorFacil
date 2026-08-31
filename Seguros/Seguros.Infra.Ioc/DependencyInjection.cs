@@ -57,6 +57,7 @@ namespace Seguros.Infra.Ioc
             services.AddScoped<IPagamentoRepository, PagamentoRepository>();
             services.AddScoped<IParcelaRepository, ParcelaRepository>();
             services.AddScoped<ISinistroRepository, SinistroRepository>();            
+            services.AddScoped<IArquivoApoliceRepository, ArquivoApoliceRepository>();
 
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IClienteService, ClienteService>();
@@ -68,6 +69,7 @@ namespace Seguros.Infra.Ioc
             services.AddScoped<IPagamentoService, PagamentoService>();
             services.AddScoped<IParcelaService, ParcelaService>();
             services.AddScoped<ISinistroService, SinistroService>();
+            services.AddScoped<IArquivoApoliceService, ArquivoApoliceService>();
 
             return services;
         }

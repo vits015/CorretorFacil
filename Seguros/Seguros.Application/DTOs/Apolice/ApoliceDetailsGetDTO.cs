@@ -21,7 +21,6 @@ namespace Seguros.Application.DTOs.Apolice
         public double PremioLiquido { get; set; }
         public double Comissao { get; set; }
         public string? LinkArquivos { get; set; }
-        public string? CaminhoArquivo { get; set; }
         public List<SinistroGetDTO> Sinistros { get; set; }
     }
 }

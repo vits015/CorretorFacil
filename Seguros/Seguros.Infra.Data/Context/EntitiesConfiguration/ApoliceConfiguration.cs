@@ -25,9 +25,6 @@ namespace Seguros.Infra.Data.Context.EntitiesConfiguration
             builder.Property(x => x.LinkArquivos)
                 .HasColumnType("text")
                 .IsRequired(false);
-            builder.Property(x => x.CaminhoArquivo)
-                .HasColumnType("text")
-                .IsRequired(false);
         }
     }
 }

@@ -48,8 +48,7 @@ namespace Seguros.Application.Services
                 PagamentoID = apolicePostDTO.PagamentoID,
                 PremioLiquido = apolicePostDTO.PremioLiquido,
                 Comissao = apolicePostDTO.Comissao,
-                LinkArquivos = apolicePostDTO.LinkArquivos,
-                CaminhoArquivo = apolicePostDTO.CaminhoArquivo
+                LinkArquivos = apolicePostDTO.LinkArquivos
 
             };
             var result = await _apoliceRepository.AddAsync(apolice);
@@ -65,8 +64,7 @@ namespace Seguros.Application.Services
                 PagamentoID = result.PagamentoID,
                 PremioLiquido = result.PremioLiquido,
                 Comissao = result.Comissao,
-                LinkArquivos = result.LinkArquivos,
-                CaminhoArquivo = result.CaminhoArquivo
+                LinkArquivos = result.LinkArquivos
             };
         }
 
@@ -89,8 +87,7 @@ namespace Seguros.Application.Services
                 PagamentoID = updatedApolice.PagamentoID,
                 PremioLiquido = updatedApolice.PremioLiquido,
                 Comissao = updatedApolice.Comissao,
-                LinkArquivos = updatedApolice.LinkArquivos,
-                CaminhoArquivo = updatedApolice.CaminhoArquivo
+                LinkArquivos = updatedApolice.LinkArquivos
             };
 
         }
@@ -111,8 +108,7 @@ namespace Seguros.Application.Services
                 PagamentoID = a.PagamentoID,
                 PremioLiquido = a.PremioLiquido,
                 Comissao = a.Comissao,
-                LinkArquivos = a.LinkArquivos,
-                CaminhoArquivo = a.CaminhoArquivo
+                LinkArquivos = a.LinkArquivos
             }).ToList();
         }
 
@@ -158,8 +154,7 @@ namespace Seguros.Application.Services
                 PagamentoID = apolice.PagamentoID,
                 PremioLiquido = apolice.PremioLiquido,
                 Comissao = apolice.Comissao,
-                LinkArquivos = apolice.LinkArquivos,
-                CaminhoArquivo = apolice.CaminhoArquivo
+                LinkArquivos = apolice.LinkArquivos
             };                
         }
 
@@ -190,7 +185,6 @@ namespace Seguros.Application.Services
 
             apolice.Id = apolicePutDTO.Id;
             apolice.LinkArquivos = apolicePutDTO.LinkArquivos;
-            apolice.CaminhoArquivo = apolicePutDTO.CaminhoArquivo;
             apolice.PagamentoID = apolicePutDTO.PagamentoID;
             apolice.PremioLiquido = apolicePutDTO.PremioLiquido;
             apolice.Produto = apolicePutDTO.Produto;
@@ -213,49 +207,7 @@ namespace Seguros.Application.Services
                 PagamentoID = apoliceUpdated.PagamentoID,
                 PremioLiquido = apoliceUpdated.PremioLiquido,
                 Comissao = apoliceUpdated.Comissao,
-                LinkArquivos = apoliceUpdated.LinkArquivos,
-                CaminhoArquivo = apoliceUpdated.CaminhoArquivo
-            };
-        }
-
-        public async Task<ApoliceGetDTO> AtualizarCaminhoArquivoAsync(
-            int id,
-            string caminhoArquivo)
-        {
-            var apolice = await _apoliceRepository.GetByIdAsync(id);
-
-            if (apolice == null || apolice.Excluido)
-                throw new NotFoundException("Apolice não encontrada.");
-
-            var prefixoEsperado = $"apolices/{id}/";
-
-            if (!caminhoArquivo.StartsWith(
-                    prefixoEsperado,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                throw new BadRequestException(
-                    "O caminho do arquivo não pertence à apólice.");
-            }
-
-            apolice.CaminhoArquivo = caminhoArquivo;
-
-            var atualizada =
-                await _apoliceRepository.UpdateAsync(apolice);
-
-            return new ApoliceGetDTO
-            {
-                Id = atualizada.Id,
-                ClienteID = atualizada.ClienteID,
-                VigenciaInicio = atualizada.VigenciaInicio,
-                VigenciaFim = atualizada.VigenciaFim,
-                SeguradoraID = atualizada.SeguradoraID,
-                TipoSeguro = atualizada.TipoSeguro,
-                Produto = atualizada.Produto,
-                PagamentoID = atualizada.PagamentoID,
-                PremioLiquido = atualizada.PremioLiquido,
-                Comissao = atualizada.Comissao,
-                LinkArquivos = atualizada.LinkArquivos,
-                CaminhoArquivo = atualizada.CaminhoArquivo
+                LinkArquivos = apoliceUpdated.LinkArquivos
             };
         }
 
@@ -307,7 +259,6 @@ namespace Seguros.Application.Services
                 PremioLiquido = apolice.PremioLiquido,
                 Comissao = apolice.Comissao,
                 LinkArquivos = apolice.LinkArquivos,
-                CaminhoArquivo = apolice.CaminhoArquivo,
                 Sinistros = sinistrosDto
             };
         }

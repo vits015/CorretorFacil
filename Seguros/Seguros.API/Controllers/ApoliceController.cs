@@ -2,6 +2,7 @@
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
 using Seguros.Application.DTOs.Apolice;
+using Seguros.Application.DTOs.ArquivoApolice;
 using Seguros.Application.Interfaces;
 
 namespace Seguros.API.Controllers
@@ -16,10 +17,15 @@ namespace Seguros.API.Controllers
     public class ApoliceController : Controller
     {
         private readonly IApoliceService _apoliceService;
+        private readonly IArquivoApoliceService _arquivoApoliceService;
         private readonly IAmazonS3 _s3;
-        public ApoliceController(IApoliceService apoliceService, IAmazonS3 s3)
+        public ApoliceController(
+            IApoliceService apoliceService,
+            IArquivoApoliceService arquivoApoliceService,
+            IAmazonS3 s3)
         {
             _apoliceService = apoliceService;
+            _arquivoApoliceService = arquivoApoliceService;
             _s3 = s3;
         }
 
@@ -91,20 +97,27 @@ namespace Seguros.API.Controllers
             }
             return Ok(apolice);
         }
-        [HttpGet("{id:int}/Download")]
-        public async Task<ActionResult> GetApoliceDownload(int id)
+        [HttpGet("{id:int}/arquivos")]
+        public async Task<ActionResult> GetApoliceArquivos(int id)
         {
-            var apolice = await _apoliceService.GetByIdAsync(id);
+            var arquivos =
+                await _arquivoApoliceService.GetByApoliceIdAsync(id);
 
-            if (apolice == null)
-            {
-                return NotFound("Apolice não encontrada.");
-            }
+            return Ok(arquivos);
+        }
+
+        [HttpGet("{id:int}/arquivos/{arquivoId:int}/download")]
+        public async Task<ActionResult> GetArquivoDownload(
+            int id,
+            int arquivoId)
+        {
+            var arquivo =
+                await _arquivoApoliceService.GetByIdAsync(id, arquivoId);
 
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = "MyBucket",
-                Key = $"apolices/{id}Apolice.pdf",
+                Key = arquivo.CaminhoArquivo,
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             };
@@ -152,33 +165,21 @@ namespace Seguros.API.Controllers
             return Ok(new
             {
                 url = urlAssinada,
-                caminho = caminhoArquivo,
+                caminhoArquivo,
                 contentType = request.ContentType
             });
         }
 
-        [HttpPut("{id:int}/arquivo")]
-        public async Task<ActionResult> SalvarCaminhoArquivo(
+        [HttpPost("{id:int}/arquivos")]
+        public async Task<ActionResult> ConfirmarUpload(
             int id,
-            [FromBody] CaminhoArquivoRequest request)
+            [FromBody] ArquivoApolicePostDTO request)
         {
-            if (string.IsNullOrWhiteSpace(request.CaminhoArquivo))
-            {
-                return BadRequest(
-                    "O caminho do arquivo é obrigatório.");
-            }
+            var arquivo =
+                await _arquivoApoliceService.AddAsync(id, request);
 
-            var apolice =
-                await _apoliceService.AtualizarCaminhoArquivoAsync(
-                    id,
-                    request.CaminhoArquivo);
-
-            return Ok(apolice);
+            return Ok(arquivo);
         }
-    }
 
-    public class CaminhoArquivoRequest
-    {
-        public string CaminhoArquivo { get; set; } = string.Empty;
     }
 };

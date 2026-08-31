@@ -21,6 +21,7 @@ namespace Seguros.Infra.Data.Context
         public DbSet<Pagamento> Pagamento { get; set; }
         public DbSet<Parcela> Parcela { get; set; }
         public DbSet<Sinistro> Sinistro { get; set; }
+        public DbSet<ArquivoApolice> ArquivoApolice { get; set; }
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

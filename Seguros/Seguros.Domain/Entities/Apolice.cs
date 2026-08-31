@@ -17,8 +17,8 @@ namespace Seguros.Domain.Entities
         public double PremioLiquido { get; set; }
         public double Comissao { get; set; }
         public string? LinkArquivos { get; set; }
-        public string? CaminhoArquivo { get; set; }
         public bool Excluido { get; set; } = false;        
-        public List<Sinistro> Sinistros { get; set; }
+        public List<Sinistro> Sinistros { get; set; } = new();
+        public List<ArquivoApolice> Arquivos { get; set; } = new();
     }
 }
