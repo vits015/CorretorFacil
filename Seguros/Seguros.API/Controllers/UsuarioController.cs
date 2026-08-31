@@ -77,6 +77,7 @@ namespace Seguros.API.Controllers
         //            return Ok();
         //        }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult> GetTokenUsuario(UserLogin userLogin)
         {
