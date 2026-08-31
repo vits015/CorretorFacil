@@ -67,7 +67,7 @@ namespace Seguros.API.Controllers
             return Ok(apolice);
         }
 
-        [HttpGet]
+        [HttpGet("getAll")]
         public async Task<ActionResult> GetAllApolices()
         {
             var apolices = await _apoliceService.GetAllAsync();
