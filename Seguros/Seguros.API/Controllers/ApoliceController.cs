@@ -29,7 +29,7 @@ namespace Seguros.API.Controllers
             _s3 = s3;
         }
 
-        [HttpPost]
+        [HttpPost("apolicePost")]
         public async Task<ActionResult> CreateApolice(ApolicePostDTO apolicePostDTO)
         {
             var createdApolice = await _apoliceService.AddAsync(apolicePostDTO);
@@ -40,7 +40,7 @@ namespace Seguros.API.Controllers
             return Ok(new { message = "Apólice criada com sucesso.", createdApolice });
         }
 
-        [HttpPut]
+        [HttpPut("apolicePut")]
         public async Task<ActionResult> UpdateApolice(ApolicePutDTO apolicePutDTO)
         {
             var updatedApolice = await _apoliceService.UpdateAsync(apolicePutDTO);
@@ -202,6 +202,5 @@ namespace Seguros.API.Controllers
 
             return Ok(arquivo);
         }
-
     }
 };
