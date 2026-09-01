@@ -129,6 +129,28 @@ namespace Seguros.API.Controllers
             });
         }
 
+        [HttpDelete("{id:int}/arquivos/{arquivoId:int}")]
+        public async Task<ActionResult> ExcluirArquivo(
+            int id,
+            int arquivoId)
+        {
+            var arquivo =
+                await _arquivoApoliceService.GetByIdAsync(id, arquivoId);
+
+            await _s3.DeleteObjectAsync(new DeleteObjectRequest
+            {
+                BucketName = "MyBucket",
+                Key = arquivo.CaminhoArquivo
+            });
+
+            await _arquivoApoliceService.DeleteAsync(id, arquivoId);
+
+            return Ok(new
+            {
+                message = "Arquivo excluído com sucesso."
+            });
+        }
+
         [HttpPost("{id:int}/upload-url")]
         public async Task<ActionResult> GerarUrlUpload(int id,
             [FromBody] UploadApoliceRequest request)

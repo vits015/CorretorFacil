@@ -80,6 +80,23 @@ public class ArquivoApoliceService : IArquivoApoliceService
         return arquivos.Select(MapToDTO).ToList();
     }
 
+    public async Task<ArquivoApoliceGetDTO> DeleteAsync(
+        int apoliceId,
+        int arquivoId)
+    {
+        var arquivo = await _arquivoRepository.GetByIdAsync(arquivoId);
+
+        if (arquivo == null || arquivo.ApoliceId != apoliceId)
+            throw new NotFoundException("Arquivo não encontrado.");
+
+        var excluido = await _arquivoRepository.DeleteAsync(arquivoId);
+
+        if (excluido == null)
+            throw new NotFoundException("Arquivo não encontrado.");
+
+        return MapToDTO(excluido);
+    }
+
     private static ArquivoApoliceGetDTO MapToDTO(ArquivoApolice arquivo)
     {
         return new ArquivoApoliceGetDTO

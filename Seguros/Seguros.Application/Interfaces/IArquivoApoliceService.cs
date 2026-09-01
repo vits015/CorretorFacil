@@ -14,4 +14,8 @@ public interface IArquivoApoliceService
 
     Task<List<ArquivoApoliceGetDTO>> GetByApoliceIdAsync(
         int apoliceId);
+
+    Task<ArquivoApoliceGetDTO> DeleteAsync(
+        int apoliceId,
+        int arquivoId);
 }

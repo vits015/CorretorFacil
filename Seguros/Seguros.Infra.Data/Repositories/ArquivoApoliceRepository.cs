@@ -36,4 +36,18 @@ public class ArquivoApoliceRepository : IArquivoApoliceRepository
             .OrderByDescending(x => x.DataUpload)
             .ToListAsync();
     }
+
+    public async Task<ArquivoApolice?> DeleteAsync(int id)
+    {
+        var arquivo = await _context.ArquivoApolice
+            .FirstOrDefaultAsync(x => x.Id == id && !x.Excluido);
+
+        if (arquivo == null)
+            return null;
+
+        arquivo.Excluido = true;
+        await _context.SaveChangesAsync();
+
+        return arquivo;
+    }
 }
