@@ -22,6 +22,7 @@ namespace Seguros.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult> CreateUsuario(UsuarioPostDTO usuarioPostDTO)
         {
             var userExists = await _authenticate.UserExists(usuarioPostDTO.Email);
