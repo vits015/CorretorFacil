@@ -37,12 +37,6 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-// Garantir registro explícito caso a extensão não esteja executando como esperado
-// (opcional — remove se duplicar registros)
-builder.Services.AddScoped<Seguros.Domain.Interfaces.IClienteRepository, Seguros.Infra.Data.Repositories.ClienteRepository>();
-builder.Services.AddScoped<Seguros.Application.Interfaces.IClienteService, Seguros.Application.Services.ClienteService>();
-
-
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
 
@@ -80,7 +74,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    dbContext.Database.Migrate();
+    //dbContext.Database.Migrate();
 }
 
 app.Run();
