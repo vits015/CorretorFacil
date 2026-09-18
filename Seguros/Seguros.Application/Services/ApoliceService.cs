@@ -99,7 +99,7 @@ namespace Seguros.Application.Services
         public async Task<List<ApoliceGetDTO>> GetAllAsync()
         {
             var apolices = await _apoliceRepository.GetAllAsync();
-            apolices.Where(ap => ap.Excluido == false);
+            apolices = apolices.Where(ap => ap.Excluido == false).ToList() ;
             return apolices.Select(a => new ApoliceGetDTO
             {
                 Id = a.Id,
